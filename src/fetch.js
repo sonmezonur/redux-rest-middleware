@@ -33,7 +33,7 @@ class Fetch {
     this.headers = headers
   }
 
-  async request(requestType, endpoint, data, params) {
+  request(requestType, endpoint, data, params) {
 
     if (!(requestType instanceof String || typeof(requestType) === 'string')) {
       throw new Error('Request type must be string')
@@ -46,26 +46,30 @@ class Fetch {
     const url = constructTargetURL(
       this.baseURL, 
       endpoint, 
-      Object.assign({}, this.params, ...params)
-      // pass default params if exists
+      {
+        ...this.params,
+        ...params
+      }
     )
-    let response
+    let fn
     if (requestTypesWithBody.includes(requestType)) {
       // pass data to it
-      response = await fetch(url, {
+      fn = fetch(url, {
         method: requestType,
         headers: this.headers,
-        body: JSON.stringify(data)
+        body: data
       })
     } else {
       // wait response of fetch call
-      response =  await fetch(url, {
+      fn = fetch(url, {
         headers: this.headers
       })
     }
 
-    const content = await response.json()
-    return content
+    return fn.then(
+      (response) => Promise.resolve(response.json()),
+      (error) => Promise.reject(error)
+    )
   }
 
   post(endpoint, data, params = {}) {

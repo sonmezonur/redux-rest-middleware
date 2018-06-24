@@ -1,4 +1,6 @@
 import Fetch from './fetch'
+import errorHandler from './errorHandler'
+import responseHandler from './responseHandler'
 
 const defaultOptions = {
   'baseURL': '/',
@@ -36,19 +38,19 @@ const restMiddleware = (options = defaultOptions) => ({ dispatch, getState }) =>
   })
 
   return asyncRequest().then(
-    (res) => {
+    (response) => {
+      const payload = responseHandler(response, fetch)
       dispatch({
         type: actionTypes.success,
-        payload: {
-          submissions: res.content
-        }
+        payload: payload
       })
       return Promise.resolve(getState())
     },
     (error) => {
+      const payload = errorHandler(error, fetch)
       dispatch({
         type: actionTypes.failure,
-        payload: error
+        payload: payload
       })
       return Promise.reject(error)
     }
@@ -57,9 +59,9 @@ const restMiddleware = (options = defaultOptions) => ({ dispatch, getState }) =>
 
 
 const fetchActionTypes = (types) => {
-  if(types == null || types.request == null) {
+  if (types == null || types.request == null) {
     throw new Error(`Request type might not be null. 
-      "Fetch" middleware must have "request" type at least.`)
+      'Fetch' middleware must have 'request' type at least.`)
   }
     
   // automatically add 'SUCCESS' type by adding '_SUCCESS' suffix to the request type  
