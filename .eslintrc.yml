@@ -1,0 +1,23 @@
+extends: standard
+
+# environment rules
+env:
+    node: true
+    browser: true
+    es6: true
+
+# linter rules
+rules:
+    # disable space before function
+    space-before-function-paren: 0
+
+# parser rules
+parserOptions:
+    ecmaFeatures:
+        experimentalObjectRestSpread: true
+        jsx: true
+    sourceType: module
+
+# eslint react plugin
+plugins:
+  - react

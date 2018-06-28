@@ -4,7 +4,7 @@ const appendQueryParams = (url, params) => {
   Object.keys(params).forEach(key => url.searchParams.append(key, params[key]))
 }
 
-const combineURLs =  (baseURL, relativeURL) => (
+const combineURLs = (baseURL, relativeURL) => (
   relativeURL
     ? baseURL.replace(/\/+$/, '') + '/' + relativeURL.replace(/^\/+/, '')
     : baseURL
@@ -19,7 +19,7 @@ const constructTargetURL = (baseURL, relativeURL, params) => {
   // append query params to URL
   appendQueryParams(combinedURLs, params)
 
-  return combinedURLs;
+  return combinedURLs
 }
 
 const requestTypesWithBody = ['POST', 'PUT', 'PATCH']
@@ -34,8 +34,7 @@ class Fetch {
   }
 
   request(requestType, endpoint, data, params) {
-
-    if (!(requestType instanceof String || typeof(requestType) === 'string')) {
+    if (!(requestType instanceof String || typeof requestType === 'string')) {
       throw new Error('Request type must be string')
     }
 
@@ -44,27 +43,24 @@ class Fetch {
     }
 
     const url = constructTargetURL(
-      this.baseURL, 
-      endpoint, 
+      this.baseURL,
+      endpoint,
       {
-        ...this.params,
-        ...params
+        ...params,
+        ...this.params
       }
     )
-    let fn
-    if (requestTypesWithBody.includes(requestType)) {
-      // pass data to it
-      fn = fetch(url, {
-        method: requestType,
-        headers: this.headers,
-        body: data
-      })
-    } else {
-      // wait response of fetch call
-      fn = fetch(url, {
-        headers: this.headers
-      })
+
+    const payload = {
+      method: requestType,
+      headers: this.headers
     }
+
+    if (requestTypesWithBody.includes(requestType)) {
+      payload['body'] = data
+    }
+
+    const fn = fetch(url, payload)
 
     return fn.then(
       (response) => Promise.resolve(response.json()),

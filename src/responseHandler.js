@@ -9,7 +9,7 @@ const responseHandler = (response, fetch) => {
   const details = `Success: '${fetch.method}' request to the source '${fetch.endpoint}'`
   const res = {}
   for (const key of Object.keys(fetchResponse)) {
-    // gets value from actual HTTP response 
+    // gets value from actual HTTP response
     const entry = response[fetchResponse[key]]
     if (entry) {
       res[key] = entry
