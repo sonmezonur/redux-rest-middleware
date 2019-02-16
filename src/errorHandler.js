@@ -5,13 +5,7 @@ const errorHandler = (error, fetch) => {
     }
     throw new Error(`'onError' must be a valid function`)
   }
-  const fetchError = fetch.error || {}
-  const details = `Fails: '${fetch.method}' to the source '${fetch.endpoint}'`
-  return {
-    ...fetchError,
-    details: details,
-    error: error
-  }
+  return null
 }
 
 export default errorHandler
